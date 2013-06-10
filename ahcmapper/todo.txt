@@ -1,0 +1,36 @@
+todo
+----
+* "added" / "removed" diff elements with index (for lists)
+
+* equivalence: list / set per default
+
+* simulate (diff between source and target)
+* distance-based, best-effort matcher for collections
+* janino
+* mapNull
+* Type identifier: von 'Class' weg verallgemeinern
+  * allgemeiner Identifier
+  * elementClass mit integrieren --> java.lang.Type
+* exception handling - remember the path of where the problem occurred
+  * callback as additional parameter of 'withSegment'? 
+* guards als Wrapper um AhcMappingPart
+* register field mapping object with mapping builder
+
+* FieldBasedAccessorFactory 
+
+* Mappings
+  * List as Set
+  * List as Bag (whatever that means exactly)
+  * List: clear/addAll
+  
+* Profiling support
+* JUnit test für primary / secondary
+
+document
+--------
+* collection handling: minimal modifications to target collections
+* limitiation: side effects in setter methods
+* path
+  * map: source, diff: target
+  * collections: map --> index, diff: 'element'
+
