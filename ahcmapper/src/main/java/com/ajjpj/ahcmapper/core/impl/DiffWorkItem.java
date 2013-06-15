@@ -10,8 +10,8 @@ import com.ajjpj.ahcmapper.core.diff.AhcMapperDiffBuilder;
 class DiffWorkItem<S, T> implements WorkItem {
     private final AhcMapperPath parentPath;
     private final String propertyIdentifier;
-    private final S source1Raw;
-    private final S source2Raw;
+    private final S source1;
+    private final S source2;
     private final Class<S> sourceClass;
     private final Class<?> sourceElementClass;
     private final Class<T> targetClass;
@@ -20,12 +20,12 @@ class DiffWorkItem<S, T> implements WorkItem {
     private final AhcMapperDiffBuilder diff;
     private final AhcMapperWorkerImpl worker;
 
-    public DiffWorkItem(AhcMapperPath parentPath, String propertyIdentifier, S source1Raw, S source2Raw, Class<S> sourceClass, Class<?> sourceElementClass, Class<T> targetClass, Class<?> targetElementClass, 
+    public DiffWorkItem(AhcMapperPath parentPath, String propertyIdentifier, S source1, S source2, Class<S> sourceClass, Class<?> sourceElementClass, Class<T> targetClass, Class<?> targetElementClass, 
             AhcMapperDiffBuilder diff, AhcMapperWorkerImpl worker) {
         this.parentPath = parentPath;
         this.propertyIdentifier = propertyIdentifier;
-        this.source1Raw = source1Raw;
-        this.source2Raw = source2Raw;
+        this.source1 = source1;
+        this.source2 = source2;
         this.sourceClass = sourceClass;
         this.sourceElementClass = sourceElementClass;
         this.targetClass = targetClass;
@@ -37,18 +37,23 @@ class DiffWorkItem<S, T> implements WorkItem {
     @SuppressWarnings("unchecked")
     @Override
     public void run() throws Exception {
-        worker.logger.debug("running diff worker: " + source1Raw + " [" + sourceClass.getSimpleName() + "] and " + source2Raw + " -> " + targetClass.getSimpleName());
+        worker.logger.debug("running diff worker: " + source1 + " [" + sourceClass.getSimpleName() + "] and " + source2 + " -> " + targetClass.getSimpleName());
 
-        final S source1 = worker.deProxyStrategy.deProxy(source1Raw);
-        final S source2 = worker.deProxyStrategy.deProxy(source2Raw);
+        final S unproxiedSource1 = worker.deProxyStrategy.deProxy(source1);
+        final S unproxiedSource2 = worker.deProxyStrategy.deProxy(source2);
 
+        if(unproxiedSource1 == unproxiedSource2) {
+            // convenience (primarily for 'null'=='null') and a minor optimization
+            return;
+        }
+        
         final Object targetMarker1 = worker.equivalenceStrategy.getTargetEquivalenceMarker(source1, sourceClass, targetClass);
         final Object targetMarker2 = worker.equivalenceStrategy.getTargetEquivalenceMarker(source2, sourceClass, targetClass);
 
         if(AhcMapperUtil.nullSafeEq(targetMarker1, targetMarker2)) {
             // equivalent (i.e. 'same id but potentially changed') target objects: no change here but potentially further down --> descend
 
-            final AhcMapperPath curPath = parentPath.withSegment(propertyIdentifier, new DiffPathMarker(source1, source2, targetMarker1, targetMarker2, propertyIdentifier));
+            final AhcMapperPath curPath = parentPath.withSegment(propertyIdentifier, new DiffPathMarker(unproxiedSource1, unproxiedSource2, targetMarker1, targetMarker2, propertyIdentifier));
             
             //TODO log 'object mapping not found'
             final AhcObjectMappingDef<Object, Object> objectMapping = 

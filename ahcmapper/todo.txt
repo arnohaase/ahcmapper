@@ -18,6 +18,15 @@ todo
 
 * FieldBasedAccessorFactory 
 
+* DiffWorkItem: identity cache von Pfad auf (source1, source2) umstellen
+
+* post processor for diff (separate):
+  * "verschoben" (selbe ID einmal gelöscht / einmal hinzugefügt)
+  * mehrere Implementierungen (auf Basis einer Equivalence-Strategie): 
+    * per ID
+    * per Ähnlichkeits-Heuristik
+    * ...
+
 * Mappings
   * List as Set
   * List as Bag (whatever that means exactly)

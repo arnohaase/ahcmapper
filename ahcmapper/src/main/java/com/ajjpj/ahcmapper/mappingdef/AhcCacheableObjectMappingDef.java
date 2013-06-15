@@ -28,9 +28,9 @@ public abstract class AhcCacheableObjectMappingDef<S, T> implements AhcObjectMap
     @Override
     public final void diff(S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass, Class<? extends T> targetClass, Class<?> targetElementClass, 
             AhcMapperPath targetPath, AhcMapperDiffBuilder diff, AhcMapperWorker worker) throws Exception {
-        if(source1 != null &&  source2 != null) {
+//        if(source1 != null &&  source2 != null) {
             doDiff(source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, targetPath, diff, worker);
-        }
+//        }
     }
     
     public abstract void doDiff(S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass, Class<? extends T> targetClass, Class<?> targetElementClass, 
