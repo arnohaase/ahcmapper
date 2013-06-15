@@ -110,17 +110,24 @@ public class AhcMapperWorkerImpl implements AhcMapperWorker {
         return diff;
     }
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public <S, T> void diff(AhcMapperPath targetPath, String segmentIdentifier, 
             S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass, 
             Class<? extends T> targetClass, Class<?> targetElementClass, 
             AhcMapperDiffBuilder diff, boolean isPrimary) throws Exception {
         
+        diff(targetPath, segmentIdentifier, source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, diff, isPrimary, null, null);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public <S, T> void diff(AhcMapperPath targetPath, String segmentIdentifier, S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass, Class<? extends T> targetClass, Class<?> targetElementClass, AhcMapperDiffBuilder diff, boolean isPrimary,
+            T optionalTarget1, T optionalTarget2) throws Exception {
+
         final AhcValueMappingDef<S, T> valueMapping = mappingProvider.getValueMapping(sourceClass, targetClass);
         if(valueMapping != null) {
-            final T targetValue1 = mapValue(valueMapping, source1);
-            final T targetValue2 = mapValue(valueMapping, source2);
+            final T targetValue1 = optionalTarget1 != null ? optionalTarget1 : mapValue(valueMapping, source1);
+            final T targetValue2 = optionalTarget2 != null ? optionalTarget2 : mapValue(valueMapping, source2);
             
             //TODO is there a reason to make equality configurable here?
             if(!AhcMapperUtil.nullSafeEq(targetValue1, targetValue2)) {
@@ -131,11 +138,10 @@ public class AhcMapperWorkerImpl implements AhcMapperWorker {
             return;
         }
 
-        final DiffWorkItem workItem = new DiffWorkItem (targetPath, segmentIdentifier, source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, diff, this);
+        final DiffWorkItem workItem = new DiffWorkItem (targetPath, segmentIdentifier, source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, diff, this, optionalTarget1, optionalTarget2);
         scheduleWorkItem(workItem, isPrimary);
+        
     }
-
-    
     
     @Override
     public <S, T> T createOrProvideTargetInstance(S source, T oldTarget, Class<? extends T> targetClass) throws Exception {

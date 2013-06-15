@@ -69,7 +69,7 @@ class MethodBasedAccessorFactory {
                     (setter != null && setter.getAnnotation(AhcMapperDelayedProperty.class) != null);
         }
         
-        return new MethodBasedPropertyAccessor (toFirstLower(def.getPropName()), def.getPropType (), def.getElementType (), isPrimary, getter, setter);
+        return new MethodBasedPropertyAccessor (toFirstLower(def.getPropName()), def.getPropType (), def.getElementType (), isPrimary, getter, setter, def.declaringClass);
     }
 
     public static Method getGetter (PropertyDef def) {

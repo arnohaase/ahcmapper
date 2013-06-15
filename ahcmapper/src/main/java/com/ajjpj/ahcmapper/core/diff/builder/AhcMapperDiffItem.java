@@ -15,5 +15,5 @@ public interface AhcMapperDiffItem {
      *  the reference was changed from 'customer 1' to 'customer 2' (the ref change), the fact that they have
      *  different names may or may not be of interest.
      */
-    boolean hasSameParent();
+    boolean hasEquivalentParent();
 }

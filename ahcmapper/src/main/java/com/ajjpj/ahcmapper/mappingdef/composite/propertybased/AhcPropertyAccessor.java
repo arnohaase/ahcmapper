@@ -6,6 +6,8 @@ public interface AhcPropertyAccessor {
     Class<?> getType();
     Class<?> getElementType();
 
+    Class<?> getOwnerType();
+    
     boolean isPrimary();
     
     boolean isReadable();

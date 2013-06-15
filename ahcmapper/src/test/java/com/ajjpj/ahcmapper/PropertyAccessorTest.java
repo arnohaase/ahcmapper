@@ -16,25 +16,25 @@ public class PropertyAccessorTest extends Assert {
     
     @Test
     public void testMethodBased() throws Exception {
-        final AhcPropertyAccessor firstName = new MethodBasedPropertyAccessor("firstName", String.class, null, true, ClassA.class.getMethod("getFirstName"), ClassA.class.getMethod("setFirstName", String.class));
+        final AhcPropertyAccessor firstName = new MethodBasedPropertyAccessor("firstName", String.class, null, true, ClassA.class.getMethod("getFirstName"), ClassA.class.getMethod("setFirstName", String.class), ClassA.class);
         check(firstName);
 
-        final AhcPropertyAccessor readOnly = new MethodBasedPropertyAccessor("firstName", String.class, null, true, ClassA.class.getMethod("getFirstName"), null);
+        final AhcPropertyAccessor readOnly = new MethodBasedPropertyAccessor("firstName", String.class, null, true, ClassA.class.getMethod("getFirstName"), null, ClassA.class);
         assertEquals(false, readOnly.isWritable());
     }
 
     @Test
     public void testFieldBased() throws Exception {
-        final AhcPropertyAccessor firstName = new FieldBasedPropertyAccessor("firstName", String.class, null, true, ClassA.class.getDeclaredField("firstName"));
+        final AhcPropertyAccessor firstName = new FieldBasedPropertyAccessor("firstName", String.class, null, true, ClassA.class.getDeclaredField("firstName"), ClassA.class);
         check(firstName);
         
-        final AhcPropertyAccessor readOnly = new FieldBasedPropertyAccessor("readOnly", String.class, null, true, PropertyAccessorTest.class.getDeclaredField("readOnlyField"));
+        final AhcPropertyAccessor readOnly = new FieldBasedPropertyAccessor("readOnly", String.class, null, true, PropertyAccessorTest.class.getDeclaredField("readOnlyField"), PropertyAccessorTest.class);
         assertEquals(false, readOnly.isWritable());
     }
 
     @Test
     public void testOgnl() throws Exception {
-        final AhcPropertyAccessor firstName = new OgnlPropertyAccessor("firstName", String.class, null, true);
+        final AhcPropertyAccessor firstName = new OgnlPropertyAccessor("firstName", String.class, null, true, ClassA.class);
         check(firstName);
     }
     

@@ -9,16 +9,20 @@ public class FieldBasedPropertyAccessor implements AhcPropertyAccessor {
     private final Class<?> type;
     private final Class<?> elementType;
     
+    private final Class<?> ownerType;
+    
     private final boolean isPrimary;
     
     private final Field field;
     
-    public FieldBasedPropertyAccessor(String name, Class<?> type, Class<?> elementType, boolean isPrimary, Field field) {
+    public FieldBasedPropertyAccessor(String name, Class<?> type, Class<?> elementType, boolean isPrimary, Field field, Class<?> ownerType) {
         this.name = name;
         this.type = type;
         this.elementType = elementType;
         this.isPrimary = isPrimary;
         this.field = field;
+        
+        this.ownerType = ownerType;
         
         if(! Modifier.isPublic(field.getModifiers()) && ! field.isAccessible()) {
             field.setAccessible(true);
@@ -45,6 +49,11 @@ public class FieldBasedPropertyAccessor implements AhcPropertyAccessor {
         return elementType;
     }
 
+    @Override
+    public Class<?> getOwnerType() {
+        return ownerType;
+    }
+    
     @Override
     public boolean isReadable() {
         return true;

@@ -32,7 +32,7 @@ class AhcMapperExpressionParser {
             }
         }
         catch (Exception exc) {
-            return new OgnlPropertyAccessor(expression, type, elementType, isPrimary);
+            return new OgnlPropertyAccessor(expression, type, elementType, isPrimary, parentClass);
         }
     }
 
@@ -89,7 +89,7 @@ class AhcMapperExpressionParser {
         //TODO use asSingleProp for the last step
         final PropertyDef lastPropertyDef = new PropertyDef(curType, toFirstUpper(propName), type, elementType);
         
-        return new MethodPathBasedPropertyAccessor(expression, type, elementType, isPrimary, steps, 
+        return new MethodPathBasedPropertyAccessor(expression, type, elementType, isPrimary, parentClass, steps, 
                 MethodBasedAccessorFactory.getGetter(lastPropertyDef), 
                 MethodBasedAccessorFactory.getSetter(lastPropertyDef, logger), 
                 treatNullSafe);

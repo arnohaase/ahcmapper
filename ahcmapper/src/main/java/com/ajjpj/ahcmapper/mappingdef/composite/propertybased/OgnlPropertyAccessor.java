@@ -12,13 +12,16 @@ public class OgnlPropertyAccessor implements AhcPropertyAccessor {
     
     private final Class<?> type;
     private final Class<?> elementType;
+
+    private final Class<?> ownerType;
     
-    public OgnlPropertyAccessor(String expressionString, Class<?> type, Class<?> elementType, boolean isPrimary) throws OgnlException {
+    public OgnlPropertyAccessor(String expressionString, Class<?> type, Class<?> elementType, boolean isPrimary, Class<?> ownerType) throws OgnlException {
         this.expressionString = expressionString;
         this.ognlExpression = Ognl.parseExpression(expressionString);
         this.type = type;
         this.elementType = elementType;
         this.isPrimary = isPrimary;
+        this.ownerType = ownerType;
     }
 
     @Override
@@ -41,6 +44,11 @@ public class OgnlPropertyAccessor implements AhcPropertyAccessor {
         return elementType;
     }
 
+    @Override
+    public Class<?> getOwnerType() {
+        return ownerType;
+    }
+    
     @Override
     public boolean isReadable() {
         return true;

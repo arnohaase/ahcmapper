@@ -9,12 +9,14 @@ public class MethodBasedPropertyAccessor implements AhcPropertyAccessor {
     private final Class<?> type;
     private final Class<?> elementType;
 
+    private final Class<?> ownerType;
+    
     private final boolean isPrimary;
     
     private final Method getter;
     private final Method setter;
     
-    public MethodBasedPropertyAccessor(String name, Class<?> type, Class<?> elementType, boolean isPrimary, Method getter, Method setter) {
+    public MethodBasedPropertyAccessor(String name, Class<?> type, Class<?> elementType, boolean isPrimary, Method getter, Method setter, Class<?> ownerType) {
         if(getter == null && setter == null) {
             throw new IllegalArgumentException ("either setter or getter must be not-null");
         }
@@ -24,6 +26,8 @@ public class MethodBasedPropertyAccessor implements AhcPropertyAccessor {
         this.isPrimary = isPrimary;
         this.getter = getter;
         this.setter = setter;
+        
+        this.ownerType = ownerType;
     }
 
     @Override
@@ -46,6 +50,11 @@ public class MethodBasedPropertyAccessor implements AhcPropertyAccessor {
         return elementType;
     }
 
+    @Override
+    public Class<?> getOwnerType() {
+        return ownerType;
+    }
+    
     @Override
     public boolean isReadable() {
         return getter != null;

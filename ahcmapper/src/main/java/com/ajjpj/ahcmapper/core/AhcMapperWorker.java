@@ -30,4 +30,15 @@ public interface AhcMapperWorker {
             S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass, 
             Class<? extends T> targetClass, Class<?> targetElementClass, 
             AhcMapperDiffBuilder diff, boolean isPrimary) throws Exception;
+
+    /**
+     * For the (rare) situation that one (or both) target value can not be obtained by mapping
+     *  a source value, e.g. because there is no parent source object and the caller provides a 
+     *  default target value.
+     */
+    <S, T> void diff(AhcMapperPath targetPath, String segmentIdentifier, 
+            S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass, 
+            Class<? extends T> targetClass, Class<?> targetElementClass, 
+            AhcMapperDiffBuilder diff, boolean isPrimary,
+            T optionalTarget1, T optionalTarget2) throws Exception;
 }

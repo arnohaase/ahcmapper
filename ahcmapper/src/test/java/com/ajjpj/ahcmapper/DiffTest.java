@@ -152,49 +152,92 @@ public class DiffTest extends Assert {
         source2.setSourceChild(new SourceChildWithId(2, "b", 1));
         
         final AhcMapperDiff diff = mapper.diff(source1, source2, SourceParentWithId.class, TargetParentWithId.class);
-        for (AhcMapperDiffEntry entry: diff.getEntries()) {
-            System.out.println(entry.getPath().getDotSeparatedRepresentation() + ": " + entry.getItem().getClass().getSimpleName());
-            System.out.println("    " + entry.getItem().getPropertyIdentifier() + ": " + entry.getItem().getOldValue() + " -> " + entry.getItem().getNewValue());
-        }
 
         assertEquals(5, diff.getEntries().size());
         
         assertEquals(AhcMapperRefDiffItem.class, diff.getSingleEntry("root").getItem().getClass());
         
         assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetId").getItem().getClass());
-        assertEquals(false, diff.getSingleEntry("targetId").getItem().hasSameParent());
+        assertEquals(false, diff.getSingleEntry("targetId").getItem().hasEquivalentParent());
         
         assertEquals(AhcMapperRefDiffItem.class, diff.getSingleEntry("targetChild").getItem().getClass());
-        assertEquals(false, diff.getSingleEntry("targetChild").getItem().hasSameParent());
+        assertEquals(false, diff.getSingleEntry("targetChild").getItem().hasEquivalentParent());
 
         assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetId").getItem().getClass());
-        assertEquals(false, diff.getSingleEntry("targetChild.targetId").getItem().hasSameParent());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetId").getItem().hasEquivalentParent());
 
         assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetAttrib1").getItem().getClass());
-        assertEquals(false, diff.getSingleEntry("targetChild.targetAttrib1").getItem().hasSameParent());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetAttrib1").getItem().hasEquivalentParent());
     }
 
     @Test
     public void testRefChangeFromNull() throws Exception {
-        fail("todo");
+        final AhcMapper mapper = createMapper();
+        
+        final SourceParentWithId source1 = new SourceParentWithId(1, "a");
+        final SourceParentWithId source2 = new SourceParentWithId(1, "a");
+
+        source2.setSourceChild(new SourceChildWithId(1, "a", 1));
+        
+        final AhcMapperDiff diff = mapper.diff(source1, source2, SourceParentWithId.class, TargetParentWithId.class);
+
+        assertEquals(4, diff.getEntries().size());
+        
+        assertEquals(AhcMapperRefDiffItem.class, diff.getSingleEntry("targetChild").getItem().getClass());
+        assertEquals(null,                              diff.getSingleEntry("targetChild").getItem().getOldValue());
+        assertEquals(new TargetChildWithId(1, null, 0), diff.getSingleEntry("targetChild").getItem().getNewValue());
+        assertEquals(true, diff.getSingleEntry("targetChild").getItem().hasEquivalentParent());
+
+        assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetId").getItem().getClass());
+        assertEquals(0, diff.getSingleEntry("targetChild.targetId").getItem().getOldValue());
+        assertEquals(1, diff.getSingleEntry("targetChild.targetId").getItem().getNewValue());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetId").getItem().hasEquivalentParent());
+
+        assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetAttrib1").getItem().getClass());
+        assertEquals(null, diff.getSingleEntry("targetChild.targetAttrib1").getItem().getOldValue());
+        assertEquals("a",  diff.getSingleEntry("targetChild.targetAttrib1").getItem().getNewValue());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetAttrib1").getItem().hasEquivalentParent());
+
+        assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetAttrib2").getItem().getClass());
+        assertEquals(0, diff.getSingleEntry("targetChild.targetAttrib2").getItem().getOldValue());
+        assertEquals(1, diff.getSingleEntry("targetChild.targetAttrib2").getItem().getNewValue());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetAttrib2").getItem().hasEquivalentParent());
     }
 
     @Test
     public void testRefChangeToNull() throws Exception {
-        fail("todo");
+        final AhcMapper mapper = createMapper();
+        
+        final SourceParentWithId source1 = new SourceParentWithId(1, "a");
+        final SourceParentWithId source2 = new SourceParentWithId(1, "a");
+
+        source1.setSourceChild(new SourceChildWithId(1, "a", 1));
+        
+        final AhcMapperDiff diff = mapper.diff(source1, source2, SourceParentWithId.class, TargetParentWithId.class);
+
+        assertEquals(4, diff.getEntries().size());
+        
+        assertEquals(AhcMapperRefDiffItem.class, diff.getSingleEntry("targetChild").getItem().getClass());
+        assertEquals(new TargetChildWithId(1, null, 0), diff.getSingleEntry("targetChild").getItem().getOldValue());
+        assertEquals(null,                              diff.getSingleEntry("targetChild").getItem().getNewValue());
+        assertEquals(true, diff.getSingleEntry("targetChild").getItem().hasEquivalentParent());
+
+        assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetId").getItem().getClass());
+        assertEquals(1, diff.getSingleEntry("targetChild.targetId").getItem().getOldValue());
+        assertEquals(0, diff.getSingleEntry("targetChild.targetId").getItem().getNewValue());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetId").getItem().hasEquivalentParent());
+
+        assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetAttrib1").getItem().getClass());
+        assertEquals("a",  diff.getSingleEntry("targetChild.targetAttrib1").getItem().getOldValue());
+        assertEquals(null, diff.getSingleEntry("targetChild.targetAttrib1").getItem().getNewValue());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetAttrib1").getItem().hasEquivalentParent());
+
+        assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetAttrib2").getItem().getClass());
+        assertEquals(1, diff.getSingleEntry("targetChild.targetAttrib2").getItem().getOldValue());
+        assertEquals(0, diff.getSingleEntry("targetChild.targetAttrib2").getItem().getNewValue());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetAttrib2").getItem().hasEquivalentParent());
     }
 
-    @Test
-    public void testRefChangeFromNullWithNonNullAttributeDefault() throws Exception {
-        // target side attribute is initialized with a value other than null --> base diff on that
-        fail("todo"); 
-    }
-
-    @Test
-    public void testRefChangeToNullWithNonNullAttributeDefault() throws Exception {
-        fail("todo");
-    }
-    
     @Test
     public void testCollectionElementedAddedRemoved() throws Exception {
         fail("todo");
@@ -226,20 +269,20 @@ public class DiffTest extends Assert {
         assertEquals(new TargetParentWithId(1, null), diff.getSingleEntry("targetAttrib").getItem().getNewTargetMarker());
         assertEquals("attrib1", diff.getSingleEntry("targetAttrib").getItem().getOldValue());
         assertEquals("attrib2", diff.getSingleEntry("targetAttrib").getItem().getNewValue());
-        assertEquals(true, diff.getSingleEntry("targetAttrib").getItem().hasSameParent());
+        assertEquals(true, diff.getSingleEntry("targetAttrib").getItem().hasEquivalentParent());
         
         assertEquals("targetAttrib", diff.getSingleEntry("targetAttrib").getPath().getDotSeparatedRepresentation());
         assertEquals(new TargetParentWithId(1, null), ((StepDetails) diff.getSingleEntry("targetAttrib").getPath().getMarker()).getParentTarget1());
         assertEquals(new TargetParentWithId(1, null), ((StepDetails) diff.getSingleEntry("targetAttrib").getPath().getMarker()).getParentTarget2());
         assertSame(source1,                           ((StepDetails) diff.getSingleEntry("targetAttrib").getPath().getMarker()).getParentSource1());
         assertSame(source2,                           ((StepDetails) diff.getSingleEntry("targetAttrib").getPath().getMarker()).getParentSource2());
-        assertEquals(true, diff.getSingleEntry("targetAttrib").getItem().hasSameParent());
+        assertEquals(true, diff.getSingleEntry("targetAttrib").getItem().hasEquivalentParent());
         
         assertEquals(new TargetChildWithId(5, null, 0), diff.getSingleEntry("targetChild.targetAttrib1").getItem().getOldTargetMarker());
         assertEquals(new TargetChildWithId(5, null, 0), diff.getSingleEntry("targetChild.targetAttrib1").getItem().getNewTargetMarker());
         assertEquals("a", diff.getSingleEntry("targetChild.targetAttrib1").getItem().getOldValue());
         assertEquals("x", diff.getSingleEntry("targetChild.targetAttrib1").getItem().getNewValue());
-        assertEquals(true, diff.getSingleEntry("targetChild.targetAttrib1").getItem().hasSameParent());
+        assertEquals(true, diff.getSingleEntry("targetChild.targetAttrib1").getItem().hasEquivalentParent());
 
         assertEquals("targetChild.targetAttrib1", diff.getSingleEntry("targetChild.targetAttrib1").getPath().getDotSeparatedRepresentation());
         assertEquals(new TargetParentWithId(1, null), ((StepDetails) diff.getSingleEntry("targetChild.targetAttrib1").getPath().tail().getMarker()).getParentTarget1());
@@ -253,7 +296,7 @@ public class DiffTest extends Assert {
         assertEquals(new TargetChildWithId(5, null, 0), diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem().getNewTargetMarker());
         assertEquals("a", diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem().getOldValue());
         assertEquals("x", diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem().getNewValue());
-        assertEquals(true, diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem().hasSameParent());
+        assertEquals(true, diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem().hasEquivalentParent());
 
         assertEquals("targetChildren.element.targetAttrib1", diff.getSingleEntry("targetChildren.element.targetAttrib1").getPath().getDotSeparatedRepresentation());
         assertEquals(new TargetChildWithId(5, null, 0), ((StepDetails) diff.getSingleEntry("targetChildren.element.targetAttrib1").getPath().getMarker()).getParentTarget1());

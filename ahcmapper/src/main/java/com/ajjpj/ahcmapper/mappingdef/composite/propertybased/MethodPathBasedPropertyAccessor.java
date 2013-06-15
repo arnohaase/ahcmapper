@@ -10,13 +10,16 @@ public class MethodPathBasedPropertyAccessor implements AhcPropertyAccessor {
     private final Class<?> elementType;
     private final boolean isPrimary;
 
+    private final Class<?> ownerType;
+    
     private final List<MethodPathBasedPropertyAccessorStep> steps;
     
     private final Method finalGetter;
     private final Method finalSetter;
     private final boolean nullSafeOnFinalStep;
     
-    public MethodPathBasedPropertyAccessor(String name, Class<?> type, Class<?> elementType, boolean isPrimary, List<MethodPathBasedPropertyAccessorStep> steps, Method finalGetter, Method finalSetter, boolean nullSafeOnFinalStep) {
+    public MethodPathBasedPropertyAccessor(String name, Class<?> type, Class<?> elementType, boolean isPrimary, Class<?> ownerType, 
+            List<MethodPathBasedPropertyAccessorStep> steps, Method finalGetter, Method finalSetter, boolean nullSafeOnFinalStep) {
         if(finalGetter == null && finalSetter == null) {
             throw new IllegalArgumentException ("either setter or getter must be not-null");
         }
@@ -28,6 +31,8 @@ public class MethodPathBasedPropertyAccessor implements AhcPropertyAccessor {
         this.finalGetter = finalGetter;
         this.finalSetter = finalSetter;
         this.nullSafeOnFinalStep = nullSafeOnFinalStep;
+        
+        this.ownerType = ownerType;
     }
 
     @Override
@@ -45,6 +50,11 @@ public class MethodPathBasedPropertyAccessor implements AhcPropertyAccessor {
         return elementType;
     }
 
+    @Override
+    public Class<?> getOwnerType() {
+        return ownerType;
+    }
+    
     @Override
     public boolean isPrimary() {
         return isPrimary;

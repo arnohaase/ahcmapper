@@ -38,9 +38,20 @@ public class AhcPropertyBasedMappingPart<S, T> implements AhcMappingPart<S, T> {
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void diff(S source1, S source2, AhcMapperPath targetPath, AhcMapperDiffBuilder diff, AhcMapperWorker worker) throws Exception {
-        worker.diff(targetPath, targetProperty.getName(), sourceProperty.getValue(source1), sourceProperty.getValue(source2), (Class) sourceProperty.getType(), sourceProperty.getElementType(), (Class) targetProperty.getType(), targetProperty.getElementType(), diff, isPrimary);
+        final Object sourcePropValue1 = source1 != null ? sourceProperty.getValue(source1) : null;
+        final Object sourcePropValue2 = source2 != null ? sourceProperty.getValue(source2) : null;
+        
+        final Object target1 = source1 != null ? null : getDefaultTargetValue(worker);
+        final Object target2 = source2 != null ? null : getDefaultTargetValue(worker);
+        
+        worker.diff(targetPath, targetProperty.getName(), sourcePropValue1, sourcePropValue2, (Class) sourceProperty.getType(), sourceProperty.getElementType(), (Class) targetProperty.getType(), targetProperty.getElementType(), diff, isPrimary, target1, target2);
     }
     
+    private Object getDefaultTargetValue(AhcMapperWorker worker) throws Exception {
+        final Object pristineTargetParent = worker.createOrProvideTargetInstance(null, null, targetProperty.getOwnerType());
+        return targetProperty.getValue(pristineTargetParent);
+    }
+
     @Override
     public String toString() {
         return "PropBasedMappingPart: " + sourceProperty.getName() + " -> " + targetProperty.getName();

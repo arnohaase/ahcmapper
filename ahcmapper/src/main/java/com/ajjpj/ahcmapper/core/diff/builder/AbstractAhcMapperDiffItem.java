@@ -43,7 +43,7 @@ public abstract class AbstractAhcMapperDiffItem implements AhcMapperDiffItem {
     }
     
     @Override
-    public boolean hasSameParent() {
+    public boolean hasEquivalentParent() {
         return AhcMapperUtil.nullSafeEq(oldTargetMarker, newTargetMarker);
     }
     
