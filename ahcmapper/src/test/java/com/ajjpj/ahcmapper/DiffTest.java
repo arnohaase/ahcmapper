@@ -21,6 +21,8 @@ import com.ajjpj.ahcmapper.core.diff.AhcMapperDiff;
 import com.ajjpj.ahcmapper.core.diff.AhcMapperDiffEntry;
 import com.ajjpj.ahcmapper.core.diff.StepDetails;
 import com.ajjpj.ahcmapper.core.diff.builder.AhcMapperElementAddedDiffItem;
+import com.ajjpj.ahcmapper.core.diff.builder.AhcMapperRefDiffItem;
+import com.ajjpj.ahcmapper.core.diff.builder.AhcMapperValueDiffItem;
 import com.ajjpj.ahcmapper.core.equivalence.AhcMapperEquivalenceStrategy;
 import com.ajjpj.ahcmapper.core.equivalence.equals.AhcMapperEqualsProvider;
 import com.ajjpj.ahcmapper.mappingdef.builtin.internal.EqualsPlaceholderMap;
@@ -75,6 +77,7 @@ public class DiffTest extends Assert {
     private AhcMapper createMapper() {
         try {
             return new AhcMapperBuilder()
+//            .withLogger(AhcMapperLogger.DEBUG_STDOUT)
             .withBidirectionalMapping(
                     newObjectMapping(SourceParentWithId.class, TargetParentWithId.class)
                     .addMapping("sourceId", Integer.TYPE, "targetId", Integer.TYPE)
@@ -139,6 +142,65 @@ public class DiffTest extends Assert {
     }
 
     @Test
+    public void testRefChange() throws Exception {
+        final AhcMapper mapper = createMapper();
+        
+        final SourceParentWithId source1 = new SourceParentWithId(1, "a");
+        final SourceParentWithId source2 = new SourceParentWithId(2, "a");
+
+        source1.setSourceChild(new SourceChildWithId(1, "a", 1));
+        source2.setSourceChild(new SourceChildWithId(2, "b", 1));
+        
+        final AhcMapperDiff diff = mapper.diff(source1, source2, SourceParentWithId.class, TargetParentWithId.class);
+        for (AhcMapperDiffEntry entry: diff.getEntries()) {
+            System.out.println(entry.getPath().getDotSeparatedRepresentation() + ": " + entry.getItem().getClass().getSimpleName());
+            System.out.println("    " + entry.getItem().getPropertyIdentifier() + ": " + entry.getItem().getOldValue() + " -> " + entry.getItem().getNewValue());
+        }
+
+        assertEquals(5, diff.getEntries().size());
+        
+        assertEquals(AhcMapperRefDiffItem.class, diff.getSingleEntry("root").getItem().getClass());
+        
+        assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetId").getItem().getClass());
+        assertEquals(false, diff.getSingleEntry("targetId").getItem().hasSameParent());
+        
+        assertEquals(AhcMapperRefDiffItem.class, diff.getSingleEntry("targetChild").getItem().getClass());
+        assertEquals(false, diff.getSingleEntry("targetChild").getItem().hasSameParent());
+
+        assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetId").getItem().getClass());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetId").getItem().hasSameParent());
+
+        assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetAttrib1").getItem().getClass());
+        assertEquals(false, diff.getSingleEntry("targetChild.targetAttrib1").getItem().hasSameParent());
+    }
+
+    @Test
+    public void testRefChangeFromNull() throws Exception {
+        fail("todo");
+    }
+
+    @Test
+    public void testRefChangeToNull() throws Exception {
+        fail("todo");
+    }
+
+    @Test
+    public void testRefChangeFromNullWithNonNullAttributeDefault() throws Exception {
+        // target side attribute is initialized with a value other than null --> base diff on that
+        fail("todo"); 
+    }
+
+    @Test
+    public void testRefChangeToNullWithNonNullAttributeDefault() throws Exception {
+        fail("todo");
+    }
+    
+    @Test
+    public void testCollectionElementedAddedRemoved() throws Exception {
+        fail("todo");
+    }
+    
+    @Test
     public void testParentChildDiff() throws Exception {
         final AhcMapper mapper = createMapper();
         
@@ -164,17 +226,20 @@ public class DiffTest extends Assert {
         assertEquals(new TargetParentWithId(1, null), diff.getSingleEntry("targetAttrib").getItem().getNewTargetMarker());
         assertEquals("attrib1", diff.getSingleEntry("targetAttrib").getItem().getOldValue());
         assertEquals("attrib2", diff.getSingleEntry("targetAttrib").getItem().getNewValue());
+        assertEquals(true, diff.getSingleEntry("targetAttrib").getItem().hasSameParent());
         
         assertEquals("targetAttrib", diff.getSingleEntry("targetAttrib").getPath().getDotSeparatedRepresentation());
         assertEquals(new TargetParentWithId(1, null), ((StepDetails) diff.getSingleEntry("targetAttrib").getPath().getMarker()).getParentTarget1());
         assertEquals(new TargetParentWithId(1, null), ((StepDetails) diff.getSingleEntry("targetAttrib").getPath().getMarker()).getParentTarget2());
         assertSame(source1,                           ((StepDetails) diff.getSingleEntry("targetAttrib").getPath().getMarker()).getParentSource1());
         assertSame(source2,                           ((StepDetails) diff.getSingleEntry("targetAttrib").getPath().getMarker()).getParentSource2());
+        assertEquals(true, diff.getSingleEntry("targetAttrib").getItem().hasSameParent());
         
         assertEquals(new TargetChildWithId(5, null, 0), diff.getSingleEntry("targetChild.targetAttrib1").getItem().getOldTargetMarker());
         assertEquals(new TargetChildWithId(5, null, 0), diff.getSingleEntry("targetChild.targetAttrib1").getItem().getNewTargetMarker());
         assertEquals("a", diff.getSingleEntry("targetChild.targetAttrib1").getItem().getOldValue());
         assertEquals("x", diff.getSingleEntry("targetChild.targetAttrib1").getItem().getNewValue());
+        assertEquals(true, diff.getSingleEntry("targetChild.targetAttrib1").getItem().hasSameParent());
 
         assertEquals("targetChild.targetAttrib1", diff.getSingleEntry("targetChild.targetAttrib1").getPath().getDotSeparatedRepresentation());
         assertEquals(new TargetParentWithId(1, null), ((StepDetails) diff.getSingleEntry("targetChild.targetAttrib1").getPath().tail().getMarker()).getParentTarget1());
@@ -188,6 +253,7 @@ public class DiffTest extends Assert {
         assertEquals(new TargetChildWithId(5, null, 0), diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem().getNewTargetMarker());
         assertEquals("a", diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem().getOldValue());
         assertEquals("x", diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem().getNewValue());
+        assertEquals(true, diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem().hasSameParent());
 
         assertEquals("targetChildren.element.targetAttrib1", diff.getSingleEntry("targetChildren.element.targetAttrib1").getPath().getDotSeparatedRepresentation());
         assertEquals(new TargetChildWithId(5, null, 0), ((StepDetails) diff.getSingleEntry("targetChildren.element.targetAttrib1").getPath().getMarker()).getParentTarget1());

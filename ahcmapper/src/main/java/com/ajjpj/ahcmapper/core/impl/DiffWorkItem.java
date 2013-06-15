@@ -50,26 +50,7 @@ class DiffWorkItem<S, T> implements WorkItem {
         final Object targetMarker1 = worker.equivalenceStrategy.getTargetEquivalenceMarker(source1, sourceClass, targetClass);
         final Object targetMarker2 = worker.equivalenceStrategy.getTargetEquivalenceMarker(source2, sourceClass, targetClass);
 
-        if(AhcMapperUtil.nullSafeEq(targetMarker1, targetMarker2)) {
-            // equivalent (i.e. 'same id but potentially changed') target objects: no change here but potentially further down --> descend
-
-            final AhcMapperPath curPath = parentPath.withSegment(propertyIdentifier, new DiffPathMarker(unproxiedSource1, unproxiedSource2, targetMarker1, targetMarker2, propertyIdentifier));
-            
-            //TODO log 'object mapping not found'
-            final AhcObjectMappingDef<Object, Object> objectMapping = 
-                    (AhcObjectMappingDef<Object, Object>) worker.mappingProvider.getObjectMapping(sourceClass, sourceElementClass, targetClass, targetElementClass);
-            
-            if(objectMapping.isCacheable()) {
-                final boolean visitedBefore = diff.markVisited(curPath);
-                if(visitedBefore) {
-                    return;
-                }
-            }
-            objectMapping.diff(source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, curPath, diff, worker);
-        }
-        else {
-            //TODO descend nonetheless!
-            
+        if(! AhcMapperUtil.nullSafeEq(targetMarker1, targetMarker2)) {
             // non-equivalent (i.e. 'different id') target objects: add RefChangedItem to the diff
             final DiffPathMarker parentMarker = (DiffPathMarker) parentPath.getMarker();
             if(parentMarker == null) {
@@ -80,6 +61,20 @@ class DiffWorkItem<S, T> implements WorkItem {
                 diff.addRefChange(parentMarker.getSource1(), parentMarker.getSource2(), targetMarker1, targetMarker2, parentPath, propertyIdentifier);
             }
         }
+        
+        final AhcMapperPath curPath = parentPath.withSegment(propertyIdentifier, new DiffPathMarker(unproxiedSource1, unproxiedSource2, targetMarker1, targetMarker2, propertyIdentifier));
+
+        //TODO log 'object mapping not found'
+        final AhcObjectMappingDef<Object, Object> objectMapping = 
+                (AhcObjectMappingDef<Object, Object>) worker.mappingProvider.getObjectMapping(sourceClass, sourceElementClass, targetClass, targetElementClass);
+
+        if(objectMapping.isCacheable()) {
+            final boolean visitedBefore = diff.markVisited(curPath);
+            if(visitedBefore) {
+                return;
+            }
+        }
+        objectMapping.diff(source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, curPath, diff, worker);
     }
     
     static class CachedTargetObject {

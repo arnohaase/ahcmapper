@@ -4,6 +4,8 @@ todo
 
 * equivalence: list / set per default
 
+* Pfad-Eintrag bei DiffEntry an Root: "root" - sollte leer sein (oder '<root>')
+
 * simulate (diff between source and target)
 * distance-based, best-effort matcher for collections
 * janino
@@ -19,6 +21,8 @@ todo
 * FieldBasedAccessorFactory 
 
 * DiffWorkItem: identity cache von Pfad auf (source1, source2) umstellen
+
+* beim Mappen: unproxy nur für Caching, prroxied source für den Abstieg!
 
 * post processor for diff (separate):
   * "verschoben" (selbe ID einmal gelöscht / einmal hinzugefügt)

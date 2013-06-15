@@ -1,5 +1,7 @@
 package com.ajjpj.ahcmapper.core.diff.builder;
 
+import com.ajjpj.ahcmapper.core.crosscutting.AhcMapperUtil;
+
 
 public abstract class AbstractAhcMapperDiffItem implements AhcMapperDiffItem {
     private final Object oldTargetMarker;
@@ -38,6 +40,11 @@ public abstract class AbstractAhcMapperDiffItem implements AhcMapperDiffItem {
     @Override
     public Object getNewValue() {
         return newValue;
+    }
+    
+    @Override
+    public boolean hasSameParent() {
+        return AhcMapperUtil.nullSafeEq(oldTargetMarker, newTargetMarker);
     }
     
     @Override
