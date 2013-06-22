@@ -109,20 +109,29 @@ public class AhcMapperWorkerImpl implements AhcMapperWorker {
         
         return diff;
     }
-    
+
     @Override
-    public <S, T> void diff(AhcMapperPath targetPath, String segmentIdentifier, 
-            S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass, 
-            Class<? extends T> targetClass, Class<?> targetElementClass, 
+    public <S, T> void diff(AhcMapperPath targetPath, String segmentIdentifier,
+            S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass,
+            Class<? extends T> targetClass, Class<?> targetElementClass,
             AhcMapperDiffBuilder diff, boolean isPrimary) throws Exception {
-        
         diff(targetPath, segmentIdentifier, source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, diff, isPrimary, null, null);
+    }
+
+    @Override
+    public <S, T> void diff(AhcMapperPath targetPath, String segmentIdentifier, S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass,
+                            Class<? extends T> targetClass, Class<?> targetElementClass,
+                            AhcMapperDiffBuilder diff, boolean isPrimary,
+                            T optionalTarget1, T optionalTarget2) throws Exception {
+        diff(targetPath, segmentIdentifier, source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, diff, isPrimary, optionalTarget1, optionalTarget2, false);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public <S, T> void diff(AhcMapperPath targetPath, String segmentIdentifier, S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass, Class<? extends T> targetClass, Class<?> targetElementClass, AhcMapperDiffBuilder diff, boolean isPrimary,
-            T optionalTarget1, T optionalTarget2) throws Exception {
+    public <S, T> void diff(AhcMapperPath targetPath, String segmentIdentifier, S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass,
+                            Class<? extends T> targetClass, Class<?> targetElementClass,
+                            AhcMapperDiffBuilder diff, boolean isPrimary,
+                            T optionalTarget1, T optionalTarget2, boolean suppressRefChangeCheck) throws Exception {
 
         final AhcValueMappingDef<S, T> valueMapping = mappingProvider.getValueMapping(sourceClass, targetClass);
         if(valueMapping != null) {
@@ -138,7 +147,7 @@ public class AhcMapperWorkerImpl implements AhcMapperWorker {
             return;
         }
 
-        final DiffWorkItem workItem = new DiffWorkItem (targetPath, segmentIdentifier, source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, diff, this, optionalTarget1, optionalTarget2);
+        final DiffWorkItem workItem = new DiffWorkItem (targetPath, segmentIdentifier, source1, source2, sourceClass, sourceElementClass, targetClass, targetElementClass, diff, this, optionalTarget1, optionalTarget2, suppressRefChangeCheck);
         scheduleWorkItem(workItem, isPrimary);
         
     }

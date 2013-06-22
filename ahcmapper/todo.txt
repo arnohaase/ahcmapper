@@ -2,6 +2,8 @@ todo
 ----
 * "added" / "removed" diff elements with index (for lists)
 
+* rename to 'ahc-mapper'
+
 * equivalence: list / set per default
 
 * Pfad-Eintrag bei DiffEntry an Root: "root" - sollte leer sein (oder '<root>')

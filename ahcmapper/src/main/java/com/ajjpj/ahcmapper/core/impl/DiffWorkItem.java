@@ -23,8 +23,10 @@ class DiffWorkItem<S, T> implements WorkItem {
     private final AhcMapperDiffBuilder diff;
     private final AhcMapperWorkerImpl worker;
 
-    public DiffWorkItem(AhcMapperPath parentPath, String propertyIdentifier, S source1, S source2, Class<S> sourceClass, Class<?> sourceElementClass, Class<T> targetClass, Class<?> targetElementClass, 
-            AhcMapperDiffBuilder diff, AhcMapperWorkerImpl worker, Object optionalTarget1, Object optionalTarget2) {
+    private final boolean suppressRefChangeCheck;
+
+    public DiffWorkItem(AhcMapperPath parentPath, String propertyIdentifier, S source1, S source2, Class<S> sourceClass, Class<?> sourceElementClass, Class<T> targetClass, Class<?> targetElementClass,
+            AhcMapperDiffBuilder diff, AhcMapperWorkerImpl worker, Object optionalTarget1, Object optionalTarget2, boolean suppressRefChangeCheck) {
         this.parentPath = parentPath;
         this.propertyIdentifier = propertyIdentifier;
         this.source1 = source1;
@@ -37,6 +39,7 @@ class DiffWorkItem<S, T> implements WorkItem {
         this.worker = worker;
         this.optionalTarget1 = optionalTarget1;
         this.optionalTarget2 = optionalTarget2;
+        this.suppressRefChangeCheck = suppressRefChangeCheck;
     }
     
     @SuppressWarnings("unchecked")
@@ -55,7 +58,7 @@ class DiffWorkItem<S, T> implements WorkItem {
         final Object targetMarker1 = optionalTarget1 != null ? optionalTarget1 : worker.equivalenceStrategy.getTargetEquivalenceMarker(source1, sourceClass, targetClass);
         final Object targetMarker2 = optionalTarget2 != null ? optionalTarget2 : worker.equivalenceStrategy.getTargetEquivalenceMarker(source2, sourceClass, targetClass);
 
-        if(! AhcMapperUtil.nullSafeEq(targetMarker1, targetMarker2)) {
+        if(! suppressRefChangeCheck && ! AhcMapperUtil.nullSafeEq(targetMarker1, targetMarker2)) {
             // non-equivalent (i.e. 'different id') target objects: add RefChangedItem to the diff
             final DiffPathMarker parentMarker = (DiffPathMarker) parentPath.getMarker();
             if(parentMarker == null) {

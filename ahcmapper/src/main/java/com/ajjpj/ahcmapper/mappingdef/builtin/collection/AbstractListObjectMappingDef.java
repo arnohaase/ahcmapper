@@ -39,7 +39,7 @@ public abstract class AbstractListObjectMappingDef extends AhcCacheableObjectMap
         final Collection<?> sourceColl1 = asCollection(source1);
         final Collection<?> sourceColl2 = asCollection(source2);
         
-        final IdentityHashMap<Object, Object> matches = worker.getEquivalenceStrategy().findEquivalentInstances(sourceColl1, sourceColl2, (Class) sourceElementClass, (Class) sourceElementClass);
+        final IdentityHashMap<Object, Object> matches = (IdentityHashMap<Object,Object>) worker.getEquivalenceStrategy().findEquivalentInstances(sourceColl1, sourceColl2, (Class) sourceElementClass, (Class) sourceElementClass);
         
         final Collection<?> removedSource = new HashSet<Object>(sourceColl1);
         removedSource.removeAll(matches.keySet());
@@ -58,10 +58,12 @@ public abstract class AbstractListObjectMappingDef extends AhcCacheableObjectMap
             for(Object added: addedSource) {
                 final Object targetEquivalenceMarker = worker.getEquivalenceStrategy().getTargetEquivalenceMarker(added, (Class) sourceElementClass, targetElementClass);
                 diff.addDiffItem(source1, source2, new AhcMapperElementAddedDiffItem(targetColl1, targetColl2, targetEquivalenceMarker));
+                worker.diff(targetPath, "element", null, added, sourceElementClass, null, targetElementClass, null, diff, true, null, null, true);
             }
             for(Object removed: removedSource) {
                 final Object targetEquivalenceMarker = worker.getEquivalenceStrategy().getTargetEquivalenceMarker(removed, (Class) sourceElementClass, targetElementClass);
                 diff.addDiffItem(source1, source2, new AhcMapperElementRemovedDiffItem(targetColl1, targetColl2, targetEquivalenceMarker));
+                worker.diff(targetPath, "element", removed, null, sourceElementClass, null, targetElementClass, null, diff, true, null, null, true);
             }
         }
     }
@@ -80,7 +82,7 @@ public abstract class AbstractListObjectMappingDef extends AhcCacheableObjectMap
     public void map(Object source, Class<?> sourceElementClass, final List<Object> target, Class<?> targetElementClass, AhcMapperPath path, AhcMapperWorker worker) throws Exception {
         final Collection<?> sourceColl = asCollection(source);
         
-        final IdentityHashMap<Object, Object> equiv = worker.getEquivalenceStrategy().findEquivalentInstances(sourceColl, target, (Class) sourceElementClass, (Class) targetElementClass); 
+        final IdentityHashMap<Object, Object> equiv = (IdentityHashMap<Object,Object>) worker.getEquivalenceStrategy().findEquivalentInstances(sourceColl, target, (Class) sourceElementClass, (Class) targetElementClass);
 
         final List<Object> shadowList = new ArrayList<Object> ();
         int index = 0;

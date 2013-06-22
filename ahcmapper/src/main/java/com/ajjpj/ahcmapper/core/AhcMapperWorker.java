@@ -41,4 +41,15 @@ public interface AhcMapperWorker {
             Class<? extends T> targetClass, Class<?> targetElementClass, 
             AhcMapperDiffBuilder diff, boolean isPrimary,
             T optionalTarget1, T optionalTarget2) throws Exception;
+
+    /**
+     * Collections add their special 'element added / removed' diff items - the generic 'ref changed'
+     *  diff items are superfluous in those situations.
+     */
+    <S, T> void diff(AhcMapperPath targetPath, String segmentIdentifier,
+                     S source1, S source2, Class<? extends S> sourceClass, Class<?> sourceElementClass,
+                     Class<? extends T> targetClass, Class<?> targetElementClass,
+                     AhcMapperDiffBuilder diff, boolean isPrimary,
+                     T optionalTarget1, T optionalTarget2,
+                     boolean suppressRefChangeCheck) throws Exception;
 }

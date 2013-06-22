@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Set;
 
+import com.ajjpj.ahcmapper.core.diff.builder.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,9 +21,6 @@ import com.ajjpj.ahcmapper.classes.TargetParentWithId;
 import com.ajjpj.ahcmapper.core.diff.AhcMapperDiff;
 import com.ajjpj.ahcmapper.core.diff.AhcMapperDiffEntry;
 import com.ajjpj.ahcmapper.core.diff.StepDetails;
-import com.ajjpj.ahcmapper.core.diff.builder.AhcMapperElementAddedDiffItem;
-import com.ajjpj.ahcmapper.core.diff.builder.AhcMapperRefDiffItem;
-import com.ajjpj.ahcmapper.core.diff.builder.AhcMapperValueDiffItem;
 import com.ajjpj.ahcmapper.core.equivalence.AhcMapperEquivalenceStrategy;
 import com.ajjpj.ahcmapper.core.equivalence.equals.AhcMapperEqualsProvider;
 import com.ajjpj.ahcmapper.mappingdef.builtin.internal.EqualsPlaceholderMap;
@@ -239,11 +237,71 @@ public class DiffTest extends Assert {
     }
 
     @Test
-    public void testCollectionElementedAddedRemoved() throws Exception {
-        fail("todo");
+    public void testCollectionElementAdded() throws Exception {
+        final AhcMapper mapper = createMapper();
+
+        final SourceParentWithId source1 = new SourceParentWithId(1, "a");
+        final SourceParentWithId source2 = new SourceParentWithId(1, "a");
+
+        source2.getSourceChildren().add(new SourceChildWithId(1, "b", 1));
+
+        final AhcMapperDiff diff = mapper.diff(source1, source2, SourceParentWithId.class, TargetParentWithId.class);
+
+        assertEquals(4, diff.getEntries().size());
+
+        final AhcMapperDiffItem addedItem = diff.getSingleEntry("targetChildren.element").getItem();
+        assertTrue(addedItem instanceof AhcMapperElementAddedDiffItem);
+        assertEquals("element", addedItem.getPropertyIdentifier());
+        assertEquals(null, addedItem.getOldValue());
+        assertEquals(new TargetChildWithId(1, null, 0), addedItem.getNewValue());
+
+        final AhcMapperDiffItem idItem = diff.getSingleEntry("targetChildren.element.targetId").getItem();
+        assertEquals(0, idItem.getOldValue());
+        assertEquals(1, idItem.getNewValue());
+
+        final AhcMapperDiffItem attrib1Item = diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem();
+        assertEquals(null, attrib1Item.getOldValue());
+        assertEquals("b", attrib1Item.getNewValue());
+
+        final AhcMapperDiffItem attrib2Item = diff.getSingleEntry("targetChildren.element.targetAttrib2").getItem();
+        assertEquals(0, attrib2Item.getOldValue());
+        assertEquals(1, attrib2Item.getNewValue());
     }
-    
+
+    //TODO diff API: getEntries(target item) --> 'durchhangeln' von added / removed
+
     @Test
+    public void testCollectionElementRemoved() throws Exception {
+        final AhcMapper mapper = createMapper();
+
+        final SourceParentWithId source1 = new SourceParentWithId(1, "a");
+        final SourceParentWithId source2 = new SourceParentWithId(1, "a");
+
+        source1.getSourceChildren().add(new SourceChildWithId(1, "b", 1));
+
+        final AhcMapperDiff diff = mapper.diff(source1, source2, SourceParentWithId.class, TargetParentWithId.class);
+
+        assertEquals(4, diff.getEntries().size());
+
+        final AhcMapperDiffItem addedItem = diff.getSingleEntry("targetChildren.element").getItem();
+        assertTrue(addedItem instanceof AhcMapperElementRemovedDiffItem);
+        assertEquals("element", addedItem.getPropertyIdentifier());
+        assertEquals(new TargetChildWithId(1, null, 0), addedItem.getOldValue());
+        assertEquals(null, addedItem.getNewValue());
+
+        final AhcMapperDiffItem idItem = diff.getSingleEntry("targetChildren.element.targetId").getItem();
+        assertEquals(1, idItem.getOldValue());
+        assertEquals(0, idItem.getNewValue());
+
+        final AhcMapperDiffItem attrib1Item = diff.getSingleEntry("targetChildren.element.targetAttrib1").getItem();
+        assertEquals("b", attrib1Item.getOldValue());
+        assertEquals(null, attrib1Item.getNewValue());
+
+        final AhcMapperDiffItem attrib2Item = diff.getSingleEntry("targetChildren.element.targetAttrib2").getItem();
+        assertEquals(1, attrib2Item.getOldValue());
+        assertEquals(0, attrib2Item.getNewValue());
+    }
+
     public void testParentChildDiff() throws Exception {
         final AhcMapper mapper = createMapper();
         
