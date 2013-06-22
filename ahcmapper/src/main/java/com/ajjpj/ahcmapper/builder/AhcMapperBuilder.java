@@ -71,7 +71,12 @@ public class AhcMapperBuilder {
         this.logger = logger;
         return this;
     }
-    
+
+    public AhcMapperBuilder withExceptionHandler(AhcMapperExceptionHandler exceptionHandler) {
+        this.exceptionHandler = exceptionHandler;
+        return this;
+    }
+
     public AhcMapperBuilder withInstanceProviderExtension (AhcMapperInstanceProviderExtension extension) {
         instanceProvider.withExtension(extension);
         return this;

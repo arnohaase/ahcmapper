@@ -29,7 +29,7 @@ public class ArrayObjectMappingDef implements AhcObjectMappingDef<Object, Object
     }
 
     @Override
-    public void diff(Object source1, Object source2, Class<? extends Object> sourceClass, Class<?> sourceElementClass, Class<? extends Object> targetClass, Class<?> targetElementClass, 
+    public void diff(Object source1, Object source2, Class<?> sourceClass, Class<?> sourceElementClass, Class<?> targetClass, Class<?> targetElementClass,
             AhcMapperPath targetPath, AhcMapperDiffBuilder diff, AhcMapperWorker worker) throws Exception {
         
         worker.diff(targetPath.tail(), targetPath.head(), source1, source2, sourceClass, sourceElementClass, List.class, targetClass.getComponentType(), diff, true);

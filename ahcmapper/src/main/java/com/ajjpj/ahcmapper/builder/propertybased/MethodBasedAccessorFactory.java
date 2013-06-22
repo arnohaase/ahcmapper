@@ -147,7 +147,7 @@ class MethodBasedAccessorFactory {
         }
         if (type instanceof GenericArrayType) {
             if ( ((GenericArrayType) type).getGenericComponentType() instanceof TypeVariable) {
-                return ((TypeVariable) ((GenericArrayType) type).getGenericComponentType()).getClass();
+                return ((GenericArrayType) type).getGenericComponentType().getClass();
             }
             final ParameterizedType componentType = (ParameterizedType) ((GenericArrayType) type).getGenericComponentType ();
             return (Class<?>) componentType.getRawType ();                            

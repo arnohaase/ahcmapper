@@ -75,15 +75,15 @@ public class CoreTest extends Assert {
             }
             
             @Override
-            public void diff(Object source1, Object source2, Class<? extends Object> sourceClass, Class<?> sourceElementClass, Class<? extends Object> targetClass, Class<?> targetElementClass, AhcMapperPath targetPath, AhcMapperDiffBuilder diff, AhcMapperWorker worker)
+            public void diff(Object source1, Object source2, Class<?> sourceClass, Class<?> sourceElementClass, Class<?> targetClass, Class<?> targetElementClass, AhcMapperPath targetPath, AhcMapperDiffBuilder diff, AhcMapperWorker worker)
                     throws Exception {
                 throw new UnsupportedOperationException();
             }
             
             @SuppressWarnings("unchecked")
             @Override
-            public Object map(Object source, Class<? extends Object> sourceClass, Class<?> sourceElementClass, 
-                    Object target, Class<? extends Object> targetClass, Class<?> targetElementClass, 
+            public Object map(Object source, Class<?> sourceClass, Class<?> sourceElementClass,
+                    Object target, Class<?> targetClass, Class<?> targetElementClass,
                     AhcMapperPath path, AhcMapperWorker worker) throws Exception {
                 final LinkedList<String> result = new LinkedList<String>();
                 for (Integer i: (Collection<Integer>) source) {

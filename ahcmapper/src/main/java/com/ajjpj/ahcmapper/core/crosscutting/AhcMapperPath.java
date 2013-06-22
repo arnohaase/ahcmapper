@@ -119,7 +119,7 @@ public abstract class AhcMapperPath {
             }
             else {
                 tail.collectDotSeparated(sb);
-                sb.append("." + head);
+                sb.append(".").append(head);
             }
         }
         

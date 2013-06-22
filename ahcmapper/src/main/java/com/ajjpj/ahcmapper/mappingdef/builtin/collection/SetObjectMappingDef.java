@@ -31,7 +31,7 @@ public class SetObjectMappingDef extends AhcCacheableObjectMappingDef<Object, Se
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void doDiff(Object source1, Object source2, Class<? extends Object> sourceClass, Class<?> sourceElementClass, 
+    public void doDiff(Object source1, Object source2, Class<?> sourceClass, Class<?> sourceElementClass,
             Class<? extends Set<Object>> targetClass, Class<?> targetElementClass, 
                     AhcMapperPath targetPath, AhcMapperDiffBuilder diff, AhcMapperWorker worker) throws Exception {
         final Collection<?> sourceColl1 = asCollection(source1);

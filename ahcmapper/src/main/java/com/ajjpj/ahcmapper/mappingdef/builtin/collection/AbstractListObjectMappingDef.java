@@ -33,7 +33,7 @@ public abstract class AbstractListObjectMappingDef extends AhcCacheableObjectMap
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void doDiff(Object source1, Object source2, Class<? extends Object> sourceClass, Class<?> sourceElementClass, Class<? extends List<Object>> targetClass, Class<?> targetElementClass, 
+    public void doDiff(Object source1, Object source2, Class<?> sourceClass, Class<?> sourceElementClass, Class<? extends List<Object>> targetClass, Class<?> targetElementClass,
             AhcMapperPath targetPath, AhcMapperDiffBuilder diff, AhcMapperWorker worker) throws Exception {
         
         final Collection<?> sourceColl1 = asCollection(source1);

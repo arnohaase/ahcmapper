@@ -1,27 +1,24 @@
 package com.ajjpj.ahcmapper;
 
-import static com.ajjpj.ahcmapper.builder.AhcMapperBuilder.newObjectMapping;
+import com.ajjpj.ahcmapper.builder.AhcMapperBuilder;
+import com.ajjpj.ahcmapper.builder.AhcMapperEqualsProviderBuilder;
+import com.ajjpj.ahcmapper.builder.AhcMapperEqualsProviderExtension;
+import com.ajjpj.ahcmapper.builder.AhcMapperListStrategy;
+import com.ajjpj.ahcmapper.classes.ClassA;
+import com.ajjpj.ahcmapper.classes.ClassB;
+import com.ajjpj.ahcmapper.classes.InnerClassA;
+import com.ajjpj.ahcmapper.classes.InnerClassB;
+import com.ajjpj.ahcmapper.core.equivalence.AhcMapperEquivalenceStrategy;
+import com.ajjpj.ahcmapper.core.equivalence.equals.EqualsBasedEquivalenceStrategy;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import com.ajjpj.ahcmapper.AhcMapper;
-import com.ajjpj.ahcmapper.builder.AhcMapperBuilder;
-import com.ajjpj.ahcmapper.builder.AhcMapperEqualsProviderBuilder;
-import com.ajjpj.ahcmapper.builder.AhcMapperEqualsProviderExtension;
-import com.ajjpj.ahcmapper.builder.AhcMapperListStrategy;
-import com.ajjpj.ahcmapper.core.equivalence.AhcMapperEquivalenceStrategy;
-import com.ajjpj.ahcmapper.core.equivalence.equals.EqualsBasedEquivalenceStrategy;
-
-import com.ajjpj.ahcmapper.classes.ClassA;
-import com.ajjpj.ahcmapper.classes.ClassB;
-import com.ajjpj.ahcmapper.classes.InnerClassA;
-import com.ajjpj.ahcmapper.classes.InnerClassB;
+import static com.ajjpj.ahcmapper.builder.AhcMapperBuilder.newObjectMapping;
 
 
 public class CollectionTest extends Assert {
@@ -81,7 +78,7 @@ public class CollectionTest extends Assert {
         assertNotSame (fromArray[1], objArray[1]);
 
         final ClassA[] fromNotNullArray = (ClassA[]) mapper.map (objArray, objArray.getClass(), ClassA.class, 
-                (Object) new ClassA[1], (Class) objArray.getClass(), ClassA.class);
+                new ClassA[1], (Class) objArray.getClass(), ClassA.class);
         assertEquals (2, fromNotNullArray.length);
         assertTrue (fromNotNullArray[0].getClass() == ClassA.class);
         assertTrue (fromNotNullArray[1].getClass() == ClassA.class);
