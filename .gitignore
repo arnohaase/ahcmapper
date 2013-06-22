@@ -4,5 +4,8 @@
 .project
 .classpath
 
+.idea
+*.iml
+
 bin
 *.class
