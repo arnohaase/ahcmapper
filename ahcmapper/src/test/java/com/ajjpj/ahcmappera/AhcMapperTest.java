@@ -1,11 +1,30 @@
 package com.ajjpj.ahcmappera;
 
+import com.ajjpj.ahcmapper.AhcMapper;
+import com.ajjpj.ahcmapper.builder.AhcMapperBuilder;
+import com.ajjpj.ahcmapper.classes.ClassA;
+import com.ajjpj.ahcmapper.classes.ClassB;
 import junit.framework.TestCase;
 import org.junit.Ignore;
+import org.junit.Test;
+
+import static com.ajjpj.ahcmapper.builder.AhcMapperBuilder.newObjectMapping;
 
 
 @Ignore
 public class AhcMapperTest extends TestCase {
+//    @Test
+//    public void testMapNull () throws Exception {
+//        final AhcMapper mapper = new AhcMapperBuilder()
+//                .withBidirectionalMapping(newObjectMapping(ClassA.class, ClassB.class)) //TODO mapNull == false
+//                .build();
+//
+//        final ClassA a = new ClassA ();
+//        final ClassB b = new ClassB ();
+//        b.setLastName ("Mustermann");
+//        mapper.map (a, b);
+//        assertEquals ("Mustermann", b.getLastName());
+//    }
 //    @Test
 //    public void testSelectiveListAsSet () throws Exception {
 //        final AhcMapper mapper = new AhcMapperBuilder()

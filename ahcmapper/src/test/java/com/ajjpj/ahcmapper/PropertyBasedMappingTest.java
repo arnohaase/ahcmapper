@@ -14,23 +14,6 @@ import com.ajjpj.ahcmapper.classes.InnerClassA;
 
 
 public class PropertyBasedMappingTest extends Assert {
-    @Test
-    public void testMapNull () throws Exception {
-        final AhcMapper mapper = new AhcMapperBuilder ()
-        .withBidirectionalMapping(newObjectMapping(ClassA.class, ClassB.class)) //TODO mapNull == false
-        .build();
-    
-        final ClassA a = new ClassA ();
-        final ClassB b = new ClassB (); 
-        b.setLastName ("Mustermann");
-        mapper.map (a, b);
-        assertEquals ("Mustermann", b.getLastName());
-    }    
-
-    @Test
-    public void testPrimary () throws Exception {
-        fail("todo");
-    }
 
     @Test
     public void testAddOneWay () throws Exception {
