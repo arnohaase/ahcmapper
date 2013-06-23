@@ -107,7 +107,6 @@ class MethodBasedAccessorFactory {
                 try {
                     final Method mtd2 = propertyDef.getDeclaringClass().getMethod("set" + propertyDef.getPropName(), primitiveEquivalent);
                     logger.warn("The setter " + propertyDef.getDeclaringClass().getName() + ".set" + propertyDef.getPropName() + " does not accept type " + propertyDef.getPropType() + " but the primitive equivalent " + primitiveEquivalent + ".");
-                    //TODO log 'using primitive equivalent'
                     return mtd2;
                 }
                 catch (NoSuchMethodException exc2) {

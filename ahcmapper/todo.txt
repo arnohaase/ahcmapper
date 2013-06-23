@@ -1,6 +1,8 @@
-todo
-----
+to do
+-----
 * "added" / "removed" diff elements with index (for lists)
+* test for java.util.List (both mapping and - especially - diffing)
+* AhcMapperDiff: getter for diff elements below a given target (globally and by path)
 
 * rename to 'ahc-mapper'
 
