@@ -182,7 +182,7 @@ public class DiffTest extends Assert {
         assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetId").getItem().getClass());
         assertEquals(0, diff.getSingleEntry("targetChild.targetId").getItem().getOldValue());
         assertEquals(1, diff.getSingleEntry("targetChild.targetId").getItem().getNewValue());
-        assertEquals(false, diff.getSingleEntry("targetChild.targetId").getItem().isCausedByStructuralChange());
+        assertEquals(true, diff.getSingleEntry("targetChild.targetId").getItem().isCausedByStructuralChange());
 
         assertEquals(AhcMapperValueDiffItem.class, diff.getSingleEntry("targetChild.targetAttrib1").getItem().getClass());
         assertEquals(null, diff.getSingleEntry("targetChild.targetAttrib1").getItem().getOldValue());
@@ -318,48 +318,48 @@ public class DiffTest extends Assert {
                 added = true;
 
                 assertEquals(null, entry.getItem().getOldValue());
-                assertEquals(new TargetChildWithId(1, null, 0), entry.getItem().getNewValue());
+                assertEquals(new TargetChildWithId(2, null, 0), entry.getItem().getNewValue());
 
                 final AhcMapperDiffItem idItem = diff.getSingleEntry("targetChildren.element.targetId", entry.getItem().getNewValue()).getItem();
                 assertEquals(0, idItem.getOldValue());
-                assertEquals(1, idItem.getNewValue());
+                assertEquals(2, idItem.getNewValue());
                 assertEquals(true, idItem.isCausedByStructuralChange());
 
                 final AhcMapperDiffItem attrib1Item = diff.getSingleEntry("targetChildren.element.targetAttrib1", entry.getItem().getNewValue()).getItem();
                 assertEquals(null, attrib1Item.getOldValue());
-                assertEquals("a", attrib1Item.getNewValue());
+                assertEquals("b", attrib1Item.getNewValue());
                 assertEquals(true, attrib1Item.isCausedByStructuralChange());
 
                 final AhcMapperDiffItem attrib2Item = diff.getSingleEntry("targetChildren.element.targetAttrib2", entry.getItem().getNewValue()).getItem();
-                assertEquals(1, attrib2Item.getOldValue());
-                assertEquals(0, attrib2Item.getNewValue());
+                assertEquals(0, attrib2Item.getOldValue());
+                assertEquals(2, attrib2Item.getNewValue());
                 assertEquals(true, attrib2Item.isCausedByStructuralChange());
             }
             else if(entry.getItem() instanceof AhcMapperElementRemovedDiffItem) {
                 removed = true;
 
-                assertEquals(new TargetChildWithId(2, null, 0), entry.getItem().getOldValue());
+                assertEquals(new TargetChildWithId(1, null, 0), entry.getItem().getOldValue());
                 assertEquals(null, entry.getItem().getNewValue());
 
-                final AhcMapperDiffItem idItem = diff.getSingleEntry("targetChildren.element.targetId", entry.getItem().getOldValue()).getItem();
-                assertEquals(0, idItem.getOldValue());
-                assertEquals(1, idItem.getNewValue());
+                final AhcMapperDiffItem idItem = diff.getSingleEntryForOldParent("targetChildren.element.targetId", entry.getItem().getOldValue()).getItem();
+                assertEquals(1, idItem.getOldValue());
+                assertEquals(0, idItem.getNewValue());
                 assertEquals(true, idItem.isCausedByStructuralChange());
 
-                final AhcMapperDiffItem attrib1Item = diff.getSingleEntry("targetChildren.element.targetAttrib1", entry.getItem().getOldValue()).getItem();
-                assertEquals(null, attrib1Item.getOldValue());
-                assertEquals("a", attrib1Item.getNewValue());
+                final AhcMapperDiffItem attrib1Item = diff.getSingleEntryForOldParent("targetChildren.element.targetAttrib1", entry.getItem().getOldValue()).getItem();
+                assertEquals("a", attrib1Item.getOldValue());
+                assertEquals(null, attrib1Item.getNewValue());
                 assertEquals(true, attrib1Item.isCausedByStructuralChange());
 
-                final AhcMapperDiffItem attrib2Item = diff.getSingleEntry("targetChildren.element.targetAttrib2", entry.getItem().getOldValue()).getItem();
+                final AhcMapperDiffItem attrib2Item = diff.getSingleEntryForOldParent("targetChildren.element.targetAttrib2", entry.getItem().getOldValue()).getItem();
                 assertEquals(1, attrib2Item.getOldValue());
                 assertEquals(0, attrib2Item.getNewValue());
                 assertEquals(true, attrib2Item.isCausedByStructuralChange());
             }
         }
 
-        final AhcMapperDiffItem addedItem = diff.getSingleEntry("targetChildren.element").getItem();
-        assertTrue(addedItem instanceof AhcMapperElementRemovedDiffItem);
+        assertTrue(added);
+        assertTrue(removed);
     }
 
     //TODO list
